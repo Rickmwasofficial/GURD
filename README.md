@@ -31,6 +31,7 @@ AI-powered health diagnostics platform for rural Kenya, enabling Community Healt
 
 ### 2. Mandatory Configuration (For Deployment)
 If you deploy this app to Google Cloud Run or share it, you **MUST** add the following domains to your **Firebase Authentication Authorized Domains**:
+- `gurd-health-diagnostics-410789680410.us-west1.run.app`
 - `ais-pre-wk5wh7dowtp63fyqw4l5o7-493110773272.europe-west2.run.app`
 - `ais-dev-wk5wh7dowtp63fyqw4l5o7-493110773272.europe-west2.run.app`
 
