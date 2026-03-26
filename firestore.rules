@@ -24,7 +24,7 @@ service cloud.firestore {
     }
 
     function isValidPatient(data) {
-      return data.age is int && data.age >= 0 && data.age <= 60 &&
+      return (data.age is int || data.age is number) && data.age >= 0 && data.age <= 60 &&
              data.gender in ['male', 'female'] &&
              data.location.lat is number && data.location.lng is number &&
              data.location.name is string && data.location.name.size() < 200 &&
@@ -33,7 +33,7 @@ service cloud.firestore {
 
     function isValidDiagnosis(data) {
       return data.patientId is string &&
-             data.diagnosis.confidence is int &&
+             (data.diagnosis.confidence is int || data.diagnosis.confidence is number) &&
              data.diagnosis.urgency in ['low', 'medium', 'high', 'critical'] &&
              data.chvId == request.auth.uid;
     }

@@ -151,7 +151,7 @@ export default function CHVForm({ onCancel, onComplete }: CHVFormProps) {
                 <label className="text-sm font-semibold text-stone-700">Age (Months)</label>
                 <input 
                   type="number" 
-                  {...register('age', { required: true, min: 0, max: 60 })}
+                  {...register('age', { required: true, min: 0, max: 60, valueAsNumber: true })}
                   className="w-full bg-stone-50 border border-stone-200 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all"
                 />
               </div>
