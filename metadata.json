@@ -1,0 +1,5 @@
+{
+  "name": "GURD Health Diagnostics",
+  "description": "AI-powered health diagnostics for rural Kenya, helping CHVs diagnose malaria, pneumonia, and malnutrition with real-time outbreak alerts.",
+  "requestFramePermissions": ["camera", "geolocation"]
+}

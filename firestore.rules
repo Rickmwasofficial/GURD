@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.chvId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == "rickmwasofficial@gmail.com" && request.auth.token.email_verified == true
+      );
+    }
+
+    function isValidPatient(data) {
+      return data.age is int && data.age >= 0 && data.age <= 60 &&
+             data.gender in ['male', 'female'] &&
+             data.location.lat is number && data.location.lng is number &&
+             data.location.name is string && data.location.name.size() < 200 &&
+             data.chvId == request.auth.uid;
+    }
+
+    function isValidDiagnosis(data) {
+      return data.patientId is string &&
+             data.diagnosis.confidence is int &&
+             data.diagnosis.urgency in ['low', 'medium', 'high', 'critical'] &&
+             data.chvId == request.auth.uid;
+    }
+
+    function isValidAlert(data) {
+      return data.disease is string &&
+             data.severity in ['low', 'medium', 'high', 'critical'] &&
+             data.caseCount is int &&
+             data.resolved is bool;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /patients/{patientId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidPatient(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner() && isValidPatient(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /diagnoses/{diagnosisId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidDiagnosis(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner() && isValidDiagnosis(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /alerts/{alertId} {
+      allow read: if isAuthenticated();
+      allow create: if isAdmin();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+  }
+}
